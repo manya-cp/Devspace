@@ -1,0 +1,216 @@
+{
+  "users": [
+    {
+      "id": "user-demo-1",
+      "name": "Alex Rivera",
+      "email": "developer@devspace.io",
+      "password": "$2b$10$59awOVAJPjLmRleIHbbCM.4QFBmewROeakEYvLPuuS7BUe22fFZBW",
+      "bio": "Staff Software Architect & open-source contributor. Obsessed with high-scale distributed systems and developer tooling.",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&h=256&q=80",
+      "createdAt": "2026-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "user-elena-2",
+      "name": "Elena Rostova",
+      "email": "elena@devspace.io",
+      "password": "$2b$10$59awOVAJPjLmRleIHbbCM.4QFBmewROeakEYvLPuuS7BUe22fFZBW",
+      "bio": "Frontend Engineer & React core enthusiast. Writing about modern web architecture, state mechanics, and TypeScript.",
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&h=256&q=80",
+      "createdAt": "2026-02-10T14:30:00.000Z"
+    },
+    {
+      "id": "user-marcus-3",
+      "name": "Marcus Vance",
+      "email": "marcus@devspace.io",
+      "password": "$2b$10$59awOVAJPjLmRleIHbbCM.4QFBmewROeakEYvLPuuS7BUe22fFZBW",
+      "bio": "Cloud Infrastructure & Database Specialist. Exploring database engines, zero-downtime migrations, and latency tuning.",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&h=256&q=80",
+      "createdAt": "2026-03-01T09:00:00.000Z"
+    },
+    {
+      "id": "user-1793506360603-b6b8d",
+      "name": "Jordan Lee, PhD",
+      "email": "jordan@devspace.io",
+      "password": "$2b$10$4UiRXW2cAjVJtAIs/XguAOk1xcxgnQ7NlJYSNul/Z9Yyo9Xax2y2a",
+      "bio": "Principal Systems Architect writing about distributed event brokers.",
+      "avatar": "https://api.dicebear.com/7.x/identicon/svg?seed=jordan%40devspace.io",
+      "createdAt": "2026-11-01T04:12:40.603Z"
+    },
+    {
+      "id": "user-1793514665704-s98om",
+      "name": "man",
+      "email": "manyacp2@gmail.com",
+      "password": "$2b$10$FxNXmR5oqpUPplMRPQsKZOqDmr3N7mdpiwvMMskDiZ/YAmKDoaBxO",
+      "bio": "Developer, writer, and tech enthusiast on DevSpace.",
+      "avatar": "https://api.dicebear.com/7.x/identicon/svg?seed=manyacp2%40gmail.com",
+      "createdAt": "2026-11-01T06:31:05.705Z"
+    }
+  ],
+  "posts": [
+    {
+      "id": "post-1",
+      "title": "Architecting Resilient Distributed Systems with Node.js and Event-Driven Streams",
+      "slug": "architecting-resilient-distributed-systems-with-nodejs",
+      "coverImage": "/src/assets/images/bg_landing_tech_1793504993992.jpg",
+      "tags": [
+        "Node.js",
+        "Architecture",
+        "System Design",
+        "Backend"
+      ],
+      "status": "published",
+      "readingTime": 6,
+      "authorId": "user-demo-1",
+      "author": {
+        "id": "user-demo-1",
+        "name": "Alex Rivera",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=256&h=256&q=80",
+        "bio": "Staff Software Architect & open-source contributor. Obsessed with high-scale distributed systems and developer tooling."
+      },
+      "content": "Distributed architectures demand proactive tolerance for partial failures, backpressure, and asynchronous message delivery. In high-throughput Node.js microservices, conventional synchronous HTTP chaining creates brittle bottlenecks and cascade outages.\n\n### The Problem with Tight Coupling\n\nWhen Service A calls Service B over REST, latency compounds exponentially:\n\n$$\\text{Total Latency} = \\sum_{i=1}^n L_i + \\text{Network Overhead}$$\n\nIf any intermediate service degrades or experiences garbage-collection stalls, upstream caller connection pools exhaust rapidly.\n\n### Designing Stream-Based Event Pipelines\n\nUsing decoupled log-based message brokers alongside Node.js native streams allows ingestion decoupled from downstream processing:\n\n```typescript\nimport { pipeline } from 'node:stream/promises';\nimport { Transform } from 'node:stream';\n\nexport async function processTelemetryBatch(inputStream: NodeJS.ReadableStream) {\n  const parseJsonTransform = new Transform({\n    objectMode: true,\n    transform(chunk, encoding, callback) {\n      try {\n        const payload = JSON.parse(chunk.toString());\n        callback(null, payload);\n      } catch (err) {\n        callback(err as Error);\n      }\n    }\n  });\n\n  await pipeline(inputStream, parseJsonTransform, async function* (source) {\n    for await (const chunk of source) {\n      yield await persistToDatabase(chunk);\n    }\n  });\n}\n```\n\n### Circuit Breakers and Graceful Degradation\n\nAlways wrap external dependencies in deterministic circuit breakers with exponential backoff and localized cache fallbacks.\n\n- **Fast failure:** Do not hold worker threads waiting 30 seconds for dead endpoints.\n- **Backpressure signaling:** Monitor high watermark buffers and reject non-critical workloads early.\n- **Idempotency keys:** Every mutation event must carry a unique transaction hash to prevent duplicate writes during network retries.",
+      "createdAt": "2026-10-24T12:00:00.000Z",
+      "updatedAt": "2026-10-24T12:00:00.000Z"
+    },
+    {
+      "id": "post-2",
+      "title": "Mastering React 19: Server Actions, Optimistic State, and Compiler Internals",
+      "slug": "mastering-react-19-server-actions-and-optimistic-ui",
+      "coverImage": "/src/assets/images/bg_auth_mesh_1793505007422.jpg",
+      "tags": [
+        "React",
+        "JavaScript",
+        "Frontend",
+        "Web Development"
+      ],
+      "status": "published",
+      "readingTime": 5,
+      "authorId": "user-elena-2",
+      "author": {
+        "id": "user-elena-2",
+        "name": "Elena Rostova",
+        "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&h=256&q=80",
+        "bio": "Frontend Engineer & React core enthusiast. Writing about modern web architecture, state mechanics, and TypeScript."
+      },
+      "content": "React 19 reshapes how modern frontend engineers reason about data mutations, form lifecycles, and component memoization. Gone are the days of manual `useMemo` and `useCallback` micro-optimizations.\n\n### The Power of `useActionState`\n\nModern form submissions no longer require complex `useState` tracking for loading flags and validation errors:\n\n```tsx\nimport { useActionState, useOptimistic } from 'react';\n\nasync function updateProfileName(previousState: string, formData: FormData) {\n  const newName = formData.get('name') as string;\n  const res = await api.put('/users/me', { name: newName });\n  return res.data.name;\n}\n\nexport function ProfileEditor({ initialName }: { initialName: string }) {\n  const [name, formAction, isPending] = useActionState(updateProfileName, initialName);\n  const [optimisticName, setOptimisticName] = useOptimistic(\n    name,\n    (current, update: string) => update\n  );\n\n  return (\n    <form action={async (formData) => {\n      const val = formData.get('name') as string;\n      setOptimisticName(val);\n      await formAction(formData);\n    }}>\n      <input name=\"name\" defaultValue={optimisticName} disabled={isPending} />\n      <button type=\"submit\">{isPending ? 'Updating...' : 'Save'}</button>\n    </form>\n  );\n}\n```\n\n### Key Architecture Takeaways\n\n1. **Optimistic Updates**: Render immediate UI confirmations while the network round-trip resolves.\n2. **Built-in Error Boundaries**: Native action error propagation means clean handling without boilerplate `try/catch` blocks in components.\n3. **Form Restoration**: Native cancellation and state reconciliation maintain focus and draft content smoothly.",
+      "createdAt": "2026-10-26T08:15:00.000Z",
+      "updatedAt": "2026-10-26T08:15:00.000Z"
+    },
+    {
+      "id": "post-3",
+      "title": "Production MongoDB Aggregations: Index Utilization and Zero-Allocation Pipelines",
+      "slug": "production-mongodb-aggregations-and-index-utilization",
+      "coverImage": "/src/assets/images/bg_workspace_dark_1793505024814.jpg",
+      "tags": [
+        "MongoDB",
+        "Database",
+        "Backend",
+        "Performance"
+      ],
+      "status": "published",
+      "readingTime": 7,
+      "authorId": "user-marcus-3",
+      "author": {
+        "id": "user-marcus-3",
+        "name": "Marcus Vance",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&h=256&q=80",
+        "bio": "Cloud Infrastructure & Database Specialist. Exploring database engines, zero-downtime migrations, and latency tuning."
+      },
+      "content": "MongoDB aggregation pipelines provide exceptional flexibility, but in production with millions of documents, unindexed pipeline stages trigger catastrophic full-collection scans and RAM thrashing.\n\n### The Cardinal Rule of `$match` Placement\n\nAlways position your `$match` stage at the very beginning of the pipeline. Doing so allows the query engine to utilize compound B-Tree indexes:\n\n```javascript\ndb.articles.aggregate([\n  // Stage 1: Strictly indexed match\n  {\n    $match: {\n      status: 'published',\n      publishedAt: { $gte: ISODate('2026-01-01T00:00:00Z') }\n    }\n  },\n  // Stage 2: Selective projection before costly groupings\n  {\n    $project: {\n      tags: 1,\n      authorId: 1,\n      readingTime: 1\n    }\n  },\n  // Stage 3: Unwind and aggregate\n  { $unwind: '$tags' },\n  {\n    $group: {\n      _id: '$tags',\n      articleCount: { $sum: 1 },\n      avgReadingTime: { $avg: '$readingTime' }\n    }\n  },\n  { $sort: { articleCount: -1 } }\n]);\n```\n\n### Index Prefix Principles\n\nWhen creating compound indexes:\n```javascript\ndb.articles.createIndex({ status: 1, tags: 1, createdAt: -1 });\n```\nEnsure queries follow the Equality, Sort, Range (ESR) rule to maximize covered query execution!",
+      "createdAt": "2026-10-28T16:45:00.000Z",
+      "updatedAt": "2026-10-28T16:45:00.000Z"
+    },
+    {
+      "id": "post-4",
+      "title": "Modern CSS in 2026: Container Queries, Subgrid, and Cascade Layer Architecture",
+      "slug": "modern-css-container-queries-subgrid-and-cascade-layers",
+      "coverImage": "/src/assets/images/bg_nodes_mesh_1793505041099.jpg",
+      "tags": [
+        "CSS",
+        "Frontend",
+        "Web Development"
+      ],
+      "status": "published",
+      "readingTime": 4,
+      "authorId": "user-elena-2",
+      "author": {
+        "id": "user-elena-2",
+        "name": "Elena Rostova",
+        "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=256&h=256&q=80",
+        "bio": "Frontend Engineer & React core enthusiast. Writing about modern web architecture, state mechanics, and TypeScript."
+      },
+      "content": "CSS has matured dramatically. Modern web layouts no longer rely on brittle viewport media queries or JavaScript-based resize listeners.\n\n### The Shift from Viewport to Container Queries\n\nWith `@container`, components adapt directly to their parent container's width, enabling true component portability across sidebars, modal dialogues, and multi-column feeds:\n\n```css\n.card-wrapper {\n  container-type: inline-size;\n  container-name: article-card;\n}\n\n@container article-card (min-width: 480px) {\n  .card-content {\n    display: grid;\n    grid-template-columns: 160px 1fr;\n    gap: 1.5rem;\n  }\n}\n```\n\n### Subgrid for Aligned Editorial Cards\n\nSubgrid ensures cards within an auto-fit grid align headers, content excerpts, and footers across adjacent columns even with uneven text lengths!",
+      "createdAt": "2026-10-29T11:20:00.000Z",
+      "updatedAt": "2026-10-29T11:20:00.000Z"
+    },
+    {
+      "id": "post-5",
+      "title": "Python Asyncio & Concurrency: High-Performance Microservices Without Leaks",
+      "slug": "python-asyncio-concurrency-microservices",
+      "coverImage": "/src/assets/images/bg_workspace_dark_1793505024814.jpg",
+      "tags": [
+        "Python",
+        "Microservices",
+        "Backend",
+        "System Design"
+      ],
+      "status": "published",
+      "readingTime": 6,
+      "authorId": "user-marcus-3",
+      "author": {
+        "id": "user-marcus-3",
+        "name": "Marcus Vance",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=256&h=256&q=80",
+        "bio": "Cloud Infrastructure & Database Specialist. Exploring database engines, zero-downtime migrations, and latency tuning."
+      },
+      "content": "Python's asyncio loop is remarkably capable when built with strict coroutine management and bounded task queues. However, fire-and-forget background tasks frequently leak memory or swallow unhandled exceptions.\n\n### Structured Concurrency with TaskGroup\n\nPython 3.11+ introduced `asyncio.TaskGroup`, which guarantees that all spawned tasks either complete together or terminate safely when an error occurs:\n\n```python\nimport asyncio\nfrom typing import List, Dict\n\nasync def fetch_upstream_metrics(sensor_id: str) -> Dict[str, float]:\n    await asyncio.sleep(0.05)\n    return {\"sensor_id\": sensor_id, \"reading\": 42.8}\n\nasync def aggregate_cluster() -> List[Dict[str, float]]:\n    results = []\n    async with asyncio.TaskGroup() as tg:\n        tasks = [\n            tg.create_task(fetch_upstream_metrics(f\"node_{i}\"))\n            for i in range(10)\n        ]\n    return [t.result() for t in tasks]\n```\n\nAlways prefer `TaskGroup` over legacy `asyncio.gather` to ensure complete fault tolerance and clear stack traces.",
+      "createdAt": "2026-10-30T09:10:00.000Z",
+      "updatedAt": "2026-10-30T09:10:00.000Z"
+    },
+    {
+      "id": "post-1793506973998-3d327",
+      "title": "Confidential System Architecture Notes",
+      "slug": "confidential-system-architecture-notes",
+      "content": "Secret draft",
+      "coverImage": "/src/assets/images/bg_landing_tech_1793504993992.jpg",
+      "tags": [
+        "Internal"
+      ],
+      "status": "draft",
+      "readingTime": 1,
+      "authorId": "user-1793506360603-b6b8d",
+      "author": {
+        "id": "user-1793506360603-b6b8d",
+        "name": "Jordan Lee, PhD",
+        "avatar": "https://api.dicebear.com/7.x/identicon/svg?seed=jordan%40devspace.io",
+        "bio": "Principal Systems Architect writing about distributed event brokers."
+      },
+      "createdAt": "2026-11-01T04:22:53.998Z",
+      "updatedAt": "2026-11-01T04:22:53.998Z"
+    },
+    {
+      "id": "post-1793515386748-a7lbo",
+      "title": "5 JavaScript Concepts Every Beginner Developer Should Know",
+      "slug": "5-javascript-concepts-every-beginner-developer-should-know",
+      "content": "Introduction\n\nJavaScript is one of the most popular programming languages used to build interactive websites and web applications. Whether you want to become a frontend developer or a full-stack developer, understanding JavaScript is an important step in your journey.\n\nWhen I started exploring web development, I realized that understanding the basics is more important than simply memorizing syntax.\n\nIn this article, let's explore five essential JavaScript concepts that every beginner should understand.\n\n1. Variables: Storing Information\n\nVariables allow us to store information that we can use later in our programs.\n\nJavaScript provides three ways to declare variables: var, let, and const.\n\nlet name = \"Manya\";\nconst language = \"JavaScript\";\n\nconsole.log(name);\nconsole.log(language);\n\nHere, name stores a value that can be reassigned, while language is declared using const and cannot be reassigned.\n\nWhy it matters: Variables help us manage information and use it throughout our programs.\n\n2. Functions: Reusing Code\n\nA function is a reusable block of code designed to perform a particular task.\n\nInstead of writing the same logic repeatedly, we can define a function and call it whenever needed.\n\nfunction greetUser(name) {\n  return `Hello, ${name}! Welcome to DevSpace.`;\n}\n\nconsole.log(greetUser(\"Manya\"));\nconsole.log(greetUser(\"Developer\"));\n\nThe function accepts a name and returns a personalized greeting.\n\nWhy it matters: Functions make code easier to organize, reuse, test, and maintain.\n\n3. Arrays: Managing Multiple Values\n\nAn array allows us to store multiple values in a single variable.\n\nconst technologies = [\"HTML\", \"CSS\", \"JavaScript\", \"React\"];\n\nconsole.log(technologies[0]);\nconsole.log(technologies[2]);\n\nJavaScript arrays use zero-based indexing. This means the first element is at index 0, the second is at index 1, and so on.\n\nWe can also use array methods to work with data.\n\nconst numbers = [10, 20, 30, 40];\n\nconst doubledNumbers = numbers.map(number => number * 2);\n\nconsole.log(doubledNumbers);\n\nOutput:\n\n[20, 40, 60, 80]\n\nWhy it matters: Arrays help us manage lists of information, such as users, products, and articles.\n\n4. Objects: Organizing Related Information\n\nObjects store related information using key-value pairs.\n\nFor example, consider a developer profile.\n\nconst developer = {\n  name: \"Manya\",\n  role: \"Web Developer\",\n  language: \"JavaScript\"\n};\n\nconsole.log(developer.name);\nconsole.log(developer.role);\n\nWe can access individual properties using dot notation.\n\nObjects are useful for representing real-world entities, including users, products, and articles in web applications.\n\nWhy it matters: Objects help organize structured data and are widely used when working with APIs.\n\n5. Promises and Async/Await: Handling Asynchronous Operations\n\nWeb applications frequently communicate with servers to retrieve or submit information.\n\nThese operations may take time. JavaScript provides Promises and async/await to help manage asynchronous tasks.\n\nConsider this example:\n\nasync function getMessage() {\n  return \"Welcome to DevSpace!\";\n}\n\ngetMessage().then(message => {\n  console.log(message);\n});\n\nThe async keyword makes the function return a Promise. The .then() method lets us handle the value when that Promise resolves.\n\nWhen working with APIs, await can make asynchronous code easier to read.\n\nasync function getPosts() {\n  try {\n    const response = await fetch(\n      \"https://jsonplaceholder.typicode.com/posts\"\n    );\n\n    if (!response.ok) {\n      throw new Error(\"Failed to fetch posts\");\n    }\n\n    const posts = await response.json();\n\n    console.log(posts);\n  } catch (error) {\n    console.error(\"Error:\", error.message);\n  }\n}\n\ngetPosts();\n\nThis example requests sample posts from a public API and displays the returned data.\n\nWhy it matters: Asynchronous programming is essential when fetching data from APIs, submitting forms, and communicating with backend servers.\n\nBonus Tip: Practice by Building Projects\n\nReading about programming concepts is useful, but applying them is what helps you improve.\n\nTry building small projects such as:\n\nA to-do list application.\nA personal portfolio website.\nA simple calculator.\nA weather application using an API.\nA developer community platform.\n\nStart small, understand your code, and gradually add more features.\n\nConclusion\n\nVariables, functions, arrays, objects, and asynchronous programming are five important JavaScript concepts that form the foundation of modern web development.\n\nUnderstanding these concepts will help you write better code and prepare you to explore more advanced technologies, including React and Node.js.\n\nRemember, becoming a better developer is not about knowing everything at once. It is about learning consistently, solving problems, and building projects.\n\nKeep learning. Keep building. Keep growing.",
+      "coverImage": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop",
+      "tags": [
+        "JavaScript",
+        "Web Development",
+        "Programming",
+        "Beginners",
+        "Frontend Development"
+      ],
+      "status": "published",
+      "readingTime": 4,
+      "authorId": "user-1793514665704-s98om",
+      "author": {
+        "id": "user-1793514665704-s98om",
+        "name": "man",
+        "avatar": "https://api.dicebear.com/7.x/identicon/svg?seed=manyacp2%40gmail.com",
+        "bio": "Developer, writer, and tech enthusiast on DevSpace."
+      },
+      "createdAt": "2026-11-01T06:43:06.752Z",
+      "updatedAt": "2026-11-01T06:43:06.752Z"
+    }
+  ]
+}

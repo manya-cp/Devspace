@@ -1,0 +1,6 @@
+{
+  "name": "DevSpace",
+  "description": "A modern developer publishing and blogging platform to publish technical articles, tutorials, and share software engineering knowledge.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
